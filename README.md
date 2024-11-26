@@ -15,4 +15,8 @@
 
 * runtime can be docker or container runtime or rkt
 
+### Docker deprecated from version 1.24
+* containerd is used. cli commands for container operation refer https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
+
+
 
