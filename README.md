@@ -13,4 +13,6 @@
    * kubelet - communicates with kubeapi to recieve the api calls and monitors the status of the pod running on the worker node
    * kube-proxy - communication between the pods running on the worker nodes.
 
+* runtime can be docker or container runtime or rkt
+
 
