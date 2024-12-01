@@ -48,9 +48,12 @@ kubectl create -f nginx-deployment.yaml
 OR
 
 In k8s version 1.19+, we can specify the –replicas option to create a deployment with 4 replicas.
-![Uploading Screenshot 2024-12-01 at 5.45.39 PM.png…]()
+
 
 kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > 
 
 ```
+Imperative 
+
+<img width="706" alt="Screenshot 2024-12-01 at 5 45 39 PM" src="https://github.com/user-attachments/assets/3f06cd95-039b-4460-a2fc-84d319390fc9">
 
