@@ -18,5 +18,8 @@
 ### Docker deprecated from version 1.24
 * containerd is used. cli commands for container operation refer https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
 
-
+### Create a new pod with the name redis and with the image redis123
+```
+kubectl run redis --image=redis123 --dry-run -o yaml
+```
 
