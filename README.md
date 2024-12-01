@@ -20,6 +20,6 @@
 
 ### Create a new pod with the name redis and with the image redis123
 ```
-kubectl run redis --image=redis123 --dry-run -o yaml
+kubectl run redis --image=redis123 --dry-run=client -o yaml
 ```
 
