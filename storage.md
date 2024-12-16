@@ -74,3 +74,6 @@ spec:
 ```
 k create -f pvc.yaml
 ```
+
+Increase Volume
+
