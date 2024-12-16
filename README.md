@@ -195,3 +195,54 @@ redis-storage   1/1     Running   0          18s
 
 ```
 
+** A pod definition file is created at /root/CKA/use-pv.yaml. Make use of this manifest file and mount the persistent volume called pv-1. Ensure the pod is running and the PV is bound.
+mountPath: /data
+persistentVolumeClaim Name: my-pvc
+persistentVolume Claim configured correctly
+pod using the correct mountPath
+pod using the persistent volume claim?
+
+Add a persistentVolumeClaim definition to pod definition file.
+
+Solution manifest file to create a pvc my-pvc as follows:
+
+```
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+       storage: 10Mi
+
+And then, update the pod definition file as follows:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: use-pv
+  name: use-pv
+spec:
+  containers:
+  - image: nginx
+    name: use-pv
+    volumeMounts:
+    - mountPath: "/data"
+      name: mypd
+  volumes:
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: my-pvc
+
+Finally, create the pod by running:
+kubectl create -f /root/CKA/use-pv.yaml
+```
+
+
+
