@@ -27,4 +27,50 @@ spec:
 ```
 k replace --force -f webapp.yaml 
 ```
+2. Create a Persistent Volume with the given specification.
+Volume Name: pv-log
+Storage: 100Mi
+Access Modes: ReadWriteMany
+Host Path: /pv/log
+Reclaim Policy: Retain
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /pv/log
+```
+```
+k create -f pv.yaml
+```
+3. Let us claim some of that storage for our application. Create a Persistent Volume Claim with the given specification.
+
+Persistent Volume Claim: claim-log-1
+Storage Request: 50Mi
+Access Modes: ReadWriteOnce
                                                
+###### reference https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+```
+```
+k create -f pvc.yaml
+```
