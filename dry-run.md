@@ -216,3 +216,84 @@ spec:
   restartPolicy: Always
 status: {}
 ```
+**********************************************************************************************************************************
+#### Task 14
+Task -
+From the pod label name=overloaded-cpu, find pods running high CPU workloads and write the name of the pod consuming most CPU to the file /opt/
+KUTR00401/KUTR00401.txt (which already exists).
+
+k top pods 
+
+
+
+
+
+
+
+
+
+***************************************
+#### Task 15 :A Kubernetes worker node, named wk8s-node-0 is in state NotReady.
+Investigate why this is the case, and perform any appropriate steps to bring the node to a Ready state, ensuring that any changes are made permanent.
+```
+systemctl enable --now kubelet
+systemctl start kubelet.service
+systemctl enable kubelet.service
+```
+***************************************
+#### Task 16 : Create a new PersistentVolumeClaim:
+✑ Name: pv-volume
+✑ Class: csi-hostpath-sc
+✑ Capacity: 10Mi
+Create a new Pod which mounts the PersistentVolumeClaim as a volume:
+✑ Name: web-server
+✑ Image: nginx
+✑ Mount path: /usr/share/nginx/html
+Configure the new Pod to have ReadWriteOnce access on the volume.
+Finally, using kubectl edit or kubectl patch expand the PersistentVolumeClaim to a capacity of 70Mi and record that change.
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: csi-hostpath-sc
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/usr/share/nginx/html"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-claim
+spec:
+  storageClassName: csi-hostpath-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-server
+spec:
+  volumes:
+    - name: pv-claim
+      persistentVolumeClaim:
+        claimName: pv-claim
+  containers:
+    - name: web-server
+      image: nginx
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: pv-claim
+```
+
