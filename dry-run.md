@@ -44,7 +44,7 @@ kubectl label namespace internal app=my-project
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: egress-namespaces
+  name: allow-port-from-namespace
 spec:
   policyTypes:
   - Ingress
@@ -111,3 +111,108 @@ controlplane $
 ```
 ************************************************************************************************************************
 #### Task 9: 
+Check to see how many nodes are ready (not including nodes tainted NoSchedule) and write the number to /opt/KUSC00402/kusc00402.txt.
+```
+kubectl get nodes | awk '{print $2}' | sed '1d' > /opt/KUSC00402/kusc00402.txt
+```
+**************************************************************************************************************************
+#### Task 10: 
+Task -
+Schedule a Pod as follows:
+✑ Name: kucc8
+✑ App Containers: 2
+✑ Container Name/Images:
+- nginx
+- consul
+```
+k run kucc8 --image=nginx --dry-run=client -o yaml > p.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: kucc8
+  name: kucc8
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: consul
+    name: consul
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+k create -f p.yaml 
+***********************************************************************************************************************************
+#### Task 11:
+Create a persistent volume with name app-data, of capacity 2Gi and access mode ReadOnlyMany. The type of volume is hostPath and its location is /srv/app-data.
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: app-data
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadOnlyMany
+  volumeMode: Block
+  hostPath:
+   path: /srv/app-data
+
+k create -f pv.yaml 
+persistentvolume/app-data created
+controlplane $ vi pv.yaml
+controlplane $ k get pv
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+app-data   2Gi        ROX            Retain           Available                          <unset>                          27s
+
+```
+**************************************************************************************************************************************
+#### Task 12:
+Monitor the logs of pod foo and:
+✑ Extract log lines corresponding to error file-not-found
+✑ Write them to /opt/KUTR00101/foo
+
+k logs -f foo | grep -i file-ot-found > /opt/KUTR00101/foo
+***************************************************************************************************************************************
+
+Context -
+An existing Pod needs to be integrated into the Kubernetes built-in logging architecture (e.g. kubectl logs). Adding a streaming sidecar container is a good and common way to accomplish this requirement.
+
+Task -
+Add a sidecar container named sidecar, using the busybox image, to the existing Pod big-corp-app. The new sidecar container has to run the following command:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: big-corp-app
+  name: big-corp-app
+spec:
+  containers:
+  - image: busybox
+    name: big-corp-app
+    command: ["/bin/sh", "-c"]
+    args: [ while true; do echo "sleep"; done  > /var/log/big-corp-app.log ]
+    volumeMounts:
+    - mountPath: /var/log/
+      name: cache-volume
+  - image: busybox
+    name: sidecar
+    command: ["/bin/sh", "-c"]
+    args: [ tail -n+1 -f /var/log/big-corp-app.log ]
+    volumeMounts:
+    - mountPath: /var/log/
+      name: cache-volume
+  volumes:
+  - name: cache-volume
+    emptyDir:
+      sizeLimit: 500Mi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
