@@ -143,7 +143,8 @@ spec:
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
-k create -f p.yaml 
+k create -f p.yaml
+```
 ***********************************************************************************************************************************
 #### Task 11:
 Create a persistent volume with name app-data, of capacity 2Gi and access mode ReadOnlyMany. The type of volume is hostPath and its location is /srv/app-data.
@@ -175,8 +176,9 @@ app-data   2Gi        ROX            Retain           Available                 
 Monitor the logs of pod foo and:
 ✑ Extract log lines corresponding to error file-not-found
 ✑ Write them to /opt/KUTR00101/foo
-
+```
 k logs -f foo | grep -i file-ot-found > /opt/KUTR00101/foo
+```
 ***************************************************************************************************************************************
 #### Task 13:
 An existing Pod needs to be integrated into the Kubernetes built-in logging architecture (e.g. kubectl logs). Adding a streaming sidecar container is a good and common way to accomplish this requirement.
