@@ -296,4 +296,69 @@ spec:
         - mountPath: "/usr/share/nginx/html"
           name: pv-claim
 ```
+```
+controlplane $ k get pod
+NAME         READY   STATUS    RESTARTS   AGE
+web-server   1/1     Running   0          96s
+controlplane $ k describe pod web-server
+Name:             web-server
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             node01/172.30.2.2
+Start Time:       Tue, 17 Dec 2024 13:16:07 +0000
+Labels:           <none>
+Annotations:      cni.projectcalico.org/containerID: 155ef0e13a364f001f18b497407c24a9f6df4fcf57628852f4929b51a6ba1512
+                  cni.projectcalico.org/podIP: 192.168.1.4/32
+                  cni.projectcalico.org/podIPs: 192.168.1.4/32
+Status:           Running
+IP:               192.168.1.4
+IPs:
+  IP:  192.168.1.4
+Containers:
+  web-server:
+    Container ID:   containerd://c271cd44dbdb09b438756882f1e1b9f40902d0ded348a89279e77c41ebffdfea
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:fb197595ebe76b9c0c14ab68159fd3c08bd067ec62300583543f0ebda353b5be
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Tue, 17 Dec 2024 13:16:20 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /usr/share/nginx/html from pv-claim (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-kpkd6 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  pv-claim:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  pv-claim
+    ReadOnly:   false
+  kube-api-access-kpkd6:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  103s  default-scheduler  Successfully assigned default/web-server to node01
+  Normal  Pulling    103s  kubelet            Pulling image "nginx"
+  Normal  Pulled     90s   kubelet            Successfully pulled image "nginx" in 12.208s (12.208s including waiting). Image size: 72099501 bytes.
+  Normal  Created    90s   kubelet            Created container web-server
+  Normal  Started    90s   kubelet            Started container web-server
+```
 
