@@ -39,3 +39,75 @@ Further ensure that the new NetworkPolicy:
 * does not allow access to Pods, which don't listen on port 9000
 * does not allow access from Pods, which are not in namespace internal
 ```
+kubectl label namespace internal app=my-project
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-namespaces
+spec:
+  policyTypes:
+  - Ingress
+  - from:
+    - namespaceSelector:
+        matchLabels:
+        app: my-project
+    ports:
+    - protocol: TCP
+      port: 9000
+```
+**************************************************************************************************************************
+#### Task 6 : Reconfigure the existing deployment front-end and add a port specification named http exposing port 80/tcp of the existing container nginx.
+Create a new service named front-end-svc exposing the container port http.
+Configure the new service to also expose the individual Pods via a NodePort on the nodes on which they are scheduled.
+
+```
+k get deployments
+k expose pod podname --service service --port=80
+```
+************************************************************************************************************************
+#### Task 7 : Scale the deployment presentation to 3 pods.
+
+k scale deployment presentation --replicas=2
+*************************************************************************************************************************
+#### Task 8: Schedule a pod as follows:
+Name: nginx-kusc00401
+* Image: nginx
+* Node selector: disk=ssd
+```
+k run nginx-kusc00401 --image=nginx --dry-run=client -o yaml
+```
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx-kusc00401
+  name: nginx-kusc00401
+spec:
+  containers:
+  - image: nginx
+    name: nginx-kusc00401
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  nodeSelector:
+    disk: ssd
+status: {}
+            
+```
+```
+controlplane $ k get nodes --show-labels
+NAME           STATUS   ROLES           AGE   VERSION   LABELS
+controlplane   Ready    control-plane   10d   v1.31.0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=controlplane,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
+node01         Ready    <none>          10d   v1.31.0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk=ssd,kubernetes.io/arch=amd64,kubernetes.io/hostname=node01,kubernetes.io/os=linux
+controlplane $ k run nginx-kusc00401 --image=nginx --dry-run=client -o yaml > pod.yaml
+
+controlplane $ k get pods -o wide 
+NAME              READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+nginx-kusc00401   1/1     Running   0          99s   192.168.1.4   node01   <none>           <none>
+controlplane $ 
+```
+************************************************************************************************************************
+#### Task 9: 
