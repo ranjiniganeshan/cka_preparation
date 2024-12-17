@@ -178,12 +178,10 @@ Monitor the logs of pod foo and:
 
 k logs -f foo | grep -i file-ot-found > /opt/KUTR00101/foo
 ***************************************************************************************************************************************
-
-Context -
+#### Task 13:
 An existing Pod needs to be integrated into the Kubernetes built-in logging architecture (e.g. kubectl logs). Adding a streaming sidecar container is a good and common way to accomplish this requirement.
+Add a sidecar container named sidecar, using the busybox image, to the existing Pod big-corp-app. The new sidecar container has to run the following command
 
-Task -
-Add a sidecar container named sidecar, using the busybox image, to the existing Pod big-corp-app. The new sidecar container has to run the following command:
 ```
 apiVersion: v1
 kind: Pod
