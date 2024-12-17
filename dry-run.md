@@ -361,4 +361,57 @@ Events:
   Normal  Created    90s   kubelet            Created container web-server
   Normal  Started    90s   kubelet            Started container web-server
 ```
+#### Increase kubectl edit or kubectl patch expand the PersistentVolumeClaim to a capacity of 70Mi and record that change.
+```
+controlplane $ k describe pod web-server
+Name:             web-server
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           <none>
+Annotations:      <none>
+Status:           Pending
+IP:               
+IPs:              <none>
+Containers:
+  web-server:
+    Image:        nginx
+    Port:         <none>
+    Host Port:    <none>
+    Environment:  <none>
+    Mounts:
+      /usr/share/nginx/html from pv-claim (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qmnnp (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  pv-claim:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  pv-claim
+    ReadOnly:   false
+  kube-api-access-qmnnp:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  18s   default-scheduler  0/2 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/2 nodes are available: 2 Preemption is not helpful for scheduling.
+```
+***********************************************************************************************************************************************************************
+#### Task 17 
+
+Create a new nginx Ingress resource as follows:
+✑ Name: pong
+✑ Namespace: ing-internal
+✑ Exposing service hello on path /hello using service port 5678
+
 
